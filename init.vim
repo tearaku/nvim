@@ -23,6 +23,9 @@ Plug 'hrsh7th/nvim-cmp'
 " LuaSnip
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
+
+" Java LSP
+Plug 'mfussenegger/nvim-jdtls'
 call plug#end()
 
 let mapleader = " "
