@@ -1,40 +1,68 @@
 " Global mapping for LSP's diagnostics
 lua <<EOF
+local lspconfig = require("lspconfig")
+
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+    callback = function(ev)
+        -- Enable completion triggered by <c-x><c-o>
+        -- vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+        -- Buffer local mappings.
+        -- See `:help vim.lsp.*` for documentation on any of the below functions
+        local opts = { buffer = ev.buf }
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+        vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+        vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+
+        vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+
+        vim.keymap.set('n', '<space>gD', vim.lsp.buf.type_definition, opts)
+        vim.keymap.set('n', '<space>bf', function()
+          vim.lsp.buf.format { async = true }
+        end, opts)
+      end,
+})
+
 local opts = { noremap=true, silent=true }
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
-local on_attach = function(client, bufnr)
-    -- Mappings
-    local bufopts = { noremap=true, silent=true, buffer=bufnr }
-    vim.keymap.set('n', '<space>bf', vim.lsp.buf.formatting, bufopts)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)        
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
-    --vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
-end
-
-local lspconfig = require "lspconfig"
 local util = require "lspconfig/util"
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
+-- === Rust config ===
+lspconfig.rust_analyzer.setup {
+    capabilities = capabilities,
+    settings = {
+        ["rust-analyzer"] = {
+            cargo = {
+                buildScripts = {
+                    enable = true,
+                },
+                loadOutDirsFromCheck = {
+                    enable = true,
+                },
+            },
+        },
+    },
+}
+
 -- === Bash config ===
 lspconfig.bashls.setup {
-    on_attach = on_attach,
     capabilities = capabilities,
 }
 
 -- === C++ config ===
 lspconfig.clangd.setup {
-    on_attach = on_attach,
     capabilities = capabilities,
 }
 
@@ -52,7 +80,6 @@ lspconfig.gopls.setup {
             gofumpt = true,
         },
     },
-    on_attach = on_attach,
     capabilities = capabilities,
 }
 
@@ -72,9 +99,14 @@ function OrgImports(wait_ms)
     end
 end
 
+-- === HTML config ===
+lspconfig.html.setup {
+    capabilities = capabilities,
+    filetypes = { "html", "htmldjango" }
+}
+
 -- ==== Typescript config ====
 lspconfig.tsserver.setup {
-    on_attach = on_attach,
     capabilities = capabilities,
 }
 

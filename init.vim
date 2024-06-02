@@ -26,14 +26,24 @@ Plug 'saadparwaiz1/cmp_luasnip'
 
 " Java LSP
 Plug 'mfussenegger/nvim-jdtls'
+
+" leap
+Plug 'tpope/vim-repeat'
+Plug 'ggandor/leap.nvim'
 call plug#end()
 
 let mapleader = " "
 " Edit and reload init.vim quickly
 nnoremap <silent> <leader>ev :<C-U>tabnew $MYVIMRC <bar> tcd %:h<cr>
 nnoremap <silent> <leader>sv :<C-U>silent update $MYVIMRC <bar> source $MYVIMRC<cr>
+" Let fzf use rg, to exclude certain folders from search (ex: node_modules)
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden'
 " Fuzzy finding keymapping
 nnoremap <leader>ff :FZF<CR>
-nnoremap <leader>ft :Rg<CR>
+nnoremap <leader>fg :Rg<CR>
+nnoremap <leader>bl :Buffer<CR>
 " Closing all buffers except current one
 command! BufOnly silent execute "%bd|e#|bd#"
+
+" Initializing leap.nvim
+lua require('leap').add_default_mappings()
