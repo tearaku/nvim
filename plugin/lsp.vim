@@ -19,6 +19,22 @@ local on_attach = function(client, bufnr)
     --vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
 end
 
+local on_attach_py = function(client, bufnr)
+    -- Mappings
+    local bufopts = { noremap=true, silent=true, buffer=bufnr }
+    vim.keymap.set('n', '<space>bf', function()
+        vim.cmd("!black %")  -- Format the current file using `black`
+        vim.cmd("silent !edit")     -- Reload the file after formatting
+    end, bufopts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)        
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
+    --vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+end
+
 local lspconfig = require "lspconfig"
 local util = require "lspconfig/util"
 
@@ -32,9 +48,6 @@ lspconfig.rust_analyzer.setup {
     settings = {
         ["rust-analyzer"] = {
             imports = {
-                granularity = {
-                    group = "module",
-                },
                 prefix = "crate",
             },
             cargo = {
@@ -62,10 +75,28 @@ lspconfig.clangd.setup {
     capabilities = capabilities,
 }
 
+-- == Python config (pyright + ruff) ==
 lspconfig.pyright.setup {
-    on_attach = on_attach,
+    on_attach = on_attach_py,
+    --on_attach = on_attach,
     capabilities = capabilities,
+    --settings = {
+    --    pyright = {
+    --        -- Use ruff's import organizer
+    --        disableOrganizeImports = true,
+    --    },
+    --    python = {
+    --        analysis = {
+    --            -- Ignore all, use ruff for linting
+    --            ignore = { '*' },
+    --        },
+    --    },
+    --}
 }
+--lspconfig.ruff.setup {
+--    on_attach = on_attach,
+--    capabilities = capabilities,
+--}
 
 -- === gopls config ===
 lspconfig.gopls.setup {
