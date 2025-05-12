@@ -2,13 +2,13 @@ local cmp = require "cmp"
 
 cmp.setup({
   completion = {
-    keyword_length = 2,
+    keyword_length = 3,
   },
   snippet = {
     -- REQUIRED - you must specify a snippet engine
     expand = function(args)
-      -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-      vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+      require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+      -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
     end,
   },
   window = {
@@ -49,8 +49,8 @@ cmp.setup({
   sources = cmp.config.sources({
     { name = 'nvim_lsp_signature_help' },
     { name = 'nvim_lsp' },
-    { name = 'nvim_lua' },
-    -- { name = 'luasnip' }, -- For luasnip users.
+    -- { name = 'nvim_lua' },
+    { name = 'luasnip', option = { use_show_condition = false } }, -- For luasnip users.
   }, {
     { name = 'buffer' },
   })
@@ -59,4 +59,9 @@ cmp.setup({
 cmp.setup.cmdline('/', {
   mapping = cmp.mapping.preset.cmdline(),
   sources = { { name = 'nvim_lsp_document_symbol' }, { name = 'buffer' } },
+})
+
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({ { name = 'path' } }, { { name = 'cmdline' } }),
 })

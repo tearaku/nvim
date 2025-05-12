@@ -3,42 +3,66 @@ local lspconfig = require 'lspconfig'
 local client_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 local servers = {
-    rust_analyzer = {
-        settings = {
-            ["rust-analyzer"] = {
-                cargo = {
-                    buildScripts = {
-                        enable = true,
-                    },
-                    loadOutDirsFromCheck = {
-                        enable = true,
-                    },
-                },
-            },
+  rust_analyzer = {
+    settings = {
+      ["rust-analyzer"] = {
+        cargo = {
+          buildScripts = {
+            enable = true,
+          },
+          procMacro = {
+            enable = true,
+          },
+          loadOutDirsFromCheck = {
+            enable = true,
+          },
         },
+      },
     },
-    gopls = {
-        cmd = {"gopls", "serve"},
-        filetypes = {"go", "gomod"},
-        root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
-        settings = {
-            gopls = {
-                analyses = {
-                    unusedparams = true,
-                },
-                staticcheck = true,
-                gofumpt = true,
-            },
+  },
+  gopls = {
+    cmd = {"gopls", "serve"},
+    filetypes = {"go", "gomod"},
+    root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
         },
+        staticcheck = true,
+        gofumpt = true,
+      },
     },
-    --tsserver = {},
-    ts_ls = {},
-    html = {
-        filetypes = { "html", "htmldjango" }
+  },
+  ts_ls = {},
+  pyright = {
+    settings = {
+      pyright = {
+        -- Using Ruff's import organizer
+        disableOrganizeImports = true,
+      },
+      python = {
+        analysis = {
+          -- Ignore all files to use Ruff for linting
+          -- Yeah but now pyright simply stops type-checking altogether, nope...
+          --ignore = { '*' },
+        },
+      },
     },
+  },
+  ruff = {
+    init_options = {
+      settings = {
+        loglevel = 'debug',
+      },
+    },
+  },
+  html = {
+    filetypes = { "html", "htmldjango" }
+  },
 }
 
 for server, config in pairs(servers) do
-    config.capabilities = vim.tbl_deep_extend('keep', config.capabilities or {}, client_capabilities)
-    lspconfig[server].setup(config)
+  config.capabilities = vim.tbl_deep_extend('keep', config.capabilities or {}, client_capabilities)
+  lspconfig[server].setup(config)
 end
