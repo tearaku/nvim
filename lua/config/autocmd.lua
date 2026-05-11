@@ -21,7 +21,7 @@ autocmd('LspAttach', {
 
         vim.keymap.set('n', '<space>gD', vim.lsp.buf.type_definition, opts)
         vim.keymap.set('n', '<space>bf', function()
-          vim.lsp.buf.format { async = true }
+          require('conform').format({ bufnr = ev.buf, async = true })
         end, opts)
       end,
 })

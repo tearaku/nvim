@@ -57,4 +57,11 @@ return {
             require('leap').create_default_mappings()
         end,
     },
+    {
+        "stevearc/conform.nvim",
+        config = function()
+            require "config.conform"
+        end,
+        event = { 'BufReadPre', 'BufNewFile' },
+    },
 }

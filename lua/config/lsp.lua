@@ -28,6 +28,11 @@ local servers = {
       gopls = {
         analyses = {
           unusedparams = true,
+          ST1000 = false, -- "at least one file... should have a package comment"
+          ST1003 = false, -- "struct field RedisDb should be RedisDB"
+          ST1020 = false, -- "comment on exported method... should be of the form"
+          ST1021 = false, -- (Additional check for type comments)
+          ST1022 = false, -- (Additional check for variable comments)
         },
         staticcheck = true,
         gofumpt = true,
